@@ -19,3 +19,35 @@ button[type="reset"] {
 button[type="reset"]:hover {
   background-color: #eaea9d;
 }
+
+.msg {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #f7f7f7;
+}
+.msg--alert {
+  background-color: #fdd;
+}
+.msg--success {
+  background-color: #dfd;
+}
+
+.input-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.input {
+  width: 250px;
+}
+
+.input--textarea {
+  resize: none;
+  padding: 10px;
+  height: 120px;
+  border: solid 1px #e7e7e7;
+}
+
+.result-table {
+  margin-top: 20px;
+}

@@ -7,10 +7,29 @@
 
   <body>
     <div>
-      <button id="cta">Check prices</button>
+      <form id="details-form">
+        <!-- <div>
+          <input type="radio" name="type" value="M" checked>Minifigs
+          <input type="radio" name="type" value="S">Sets
+        </div> -->
+
+        <div class="input-field">
+          <label for="minifig-ids">Enter list of minifigures *</label>
+          <textarea
+            id="minifig-ids"
+            name="minifig-ids"
+            class="input input--textarea"
+            placeholder="elf001...elf003,elf008,col111...col113"
+          >elf001...elf003</textarea>
+        </div>
+        
+        <button type="submit" id="cta">Check prices</button>
+      </form>
     </div>
 
-    <table id="result"></table>
+    <div id="msg-container"></div>
+
+    <table id="result" class="result-table"></table>
     <script src="./app.js"></script>
   </body>
 </html>

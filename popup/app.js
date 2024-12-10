@@ -1,32 +1,106 @@
-console.clear()
-console.log("popup/app.js has loaded..")
+const extensionName = 'BrickLink Price Finder'
 
 // Add event listener on page load
 document.addEventListener("DOMContentLoaded", listenForClicks);
 
 function listenForClicks () {
-  const ctaElm = document.getElementById("cta")
-  ctaElm.addEventListener("click", start)
+  const form = document.getElementById("details-form")
+  form.addEventListener("submit", onSubmit)
 }
 
-async function start () {
-  const urlData = []
-  const total = 3
+function onSubmit (e) {
+  e.preventDefault()
 
-  for (let i = 1; i <= total; i++) {
-    const minifigId = i < 10 ? `elf00${i}` : `elf0${i}`
-    const baseUrl = `https://www.bricklink.com/v2/catalog/catalogitem.page?M=${minifigId}#T=S&O={"ss":"IN","cond":"N","iconly":0}`
+  
+}
 
-    urlData.push({
-      id: minifigId,
-      url: baseUrl
-    })
+function parseMinifigIds (data) {
+  const ids = []
+  
+  data.split(',').forEach(item => {
+    if (!item.includes('...')) {
+      ids.push(item)
+      return
+    }
+
+    ids.push(...getIdsInRange(item))
+  })
+
+  return ids
+}
+
+function getIdsInRange (item) {
+  const range = item.split('...')
+  
+  const regex = /^([a-zA-Z]+)(\d+)$/
+  const matchLower = range[0].match(regex)
+
+  const series = matchLower[1] // letters (eg: col, elf)
+  const lowerLimit = parseInt(matchLower[2]) // numbers (eg: 3, 12, 991)
+
+  const matchUpper = range[1].match(regex)
+
+  const upperLimit = parseInt(matchUpper[2]) // numbers (eg: 3, 12, 991)
+
+  if (lowerLimit > upperLimit) {
+    throw new Error("Range seems incorrect. Correct range will look like \"elf001...elf003\"")
   }
 
-  const savedData = [];
+  const arr = []
+  for (let i = lowerLimit; i <= upperLimit; i++) {
+    arr.push(`${series}${getStringWithZeroes(i)}`)
+  }
+
+  return arr
+}
+
+function getStringWithZeroes (number) {
+  // assuming length to be 3
+  
+  if (number < 10) {
+    return `00${number}`
+  }
+  
+  if (number < 100) {
+    return `0${number}`
+  }
+  
+  return number
+}
+
+async function onSubmit (e) {
+  e.preventDefault()
+
+  const urlData = []
+
+  const msgContainerElm = document.getElementById("msg-container")
+  msgContainerElm.innerHTML = ""
+  
+  msgContainerElm.innerHTML += `<div class="msg">Calculating..</div>`
+
+  try {
+    const minifigIdsText = e.target.elements['minifig-ids'].value || ''
+    const minifigIds = parseMinifigIds(minifigIdsText)
+    console.log(minifigIds)
+    msgContainerElm.innerHTML += `<div class="msg msg--warning">Generated list of minifigure IDs: ${minifigIds.join(', ')}</div>`
+
+    minifigIds.forEach(minifigId => {
+      const baseUrl = `https://www.bricklink.com/v2/catalog/catalogitem.page?M=${minifigId}#T=S&O={"ss":"IN","cond":"N","iconly":0}`
+
+      urlData.push({
+        id: minifigId,
+        url: baseUrl
+      })
+    })
+  } catch (e) {
+    msgContainerElm.innerHTML += `<div class="msg msg--alert">${e}</div>`
+  }
+
+  msgContainerElm.innerHTML += `<div class="msg">Looking up prices..</div>`
+  
+  const savedData = []
 
   const tableElm = document.getElementById("result")
-  tableElm.innerHTML = "Checking.."
 
   try {
     for (const { id, url } of urlData) {
@@ -53,6 +127,8 @@ async function start () {
     console.table(savedData);
 
     rendertoTable(savedData, tableElm)
+
+    msgContainerElm.innerHTML += `<div class="msg msg--success">Thank you for using ${extensionName} extension! The price details are listed below..</div>`
   } catch (error) {
     tableElm.innerHTML = `An error occurred: "${error}". Please try again..`
     console.error("An error occurred:", error);
