@@ -14,7 +14,7 @@ function listenForClicks () {
 
 async function start () {
   const urlData = []
-  const total = 19
+  const total = 3
 
   for (let i = 1; i <= total; i++) {
     const minifigId = i < 10 ? `elf00${i}` : `elf0${i}`
@@ -35,13 +35,11 @@ async function start () {
       // Wait for the tab to load and execute a script to fetch the title
       const [result] = await browser.tabs.executeScript(tab.id, {
         file: './tab.js'
-        // code: "document.title;" // Fetch the title directly
       });
 
       // Save the URL and title
       savedData.push({
         id,
-        // tabId: tab.id,
         ...result
       });
 

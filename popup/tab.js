@@ -34,14 +34,9 @@ function waitForElementToLoad (selector, { timeout, gap } = { timeout: 10000, ga
 
   const splittedAndTrimmedText = firstRow.textContent.replace(/\\n|\\t|\\r/g, '').split(' ')
 
-  // Ensure that the second part contains the numeric value
-  const amount = splittedAndTrimmedText[0] + ' ' + (splittedAndTrimmedText[1] ? JSON.stringify(splittedAndTrimmedText[1]).match(/[\d,\.]+/)[0] : '')
-
-  console.log("splittedAndTrimmedText", splittedAndTrimmedText[1].match(/[\d\.]+/)[0], amount)
-  console.log(JSON.stringify(splittedAndTrimmedText[1]))
-
   return {
     name,
-    amount: amount.trim()
+    currency: splittedAndTrimmedText[0].trim(),
+    amount: parseInt(splittedAndTrimmedText[1].match(/[\d,\.]+/)[0].trim())
   }
 })()
