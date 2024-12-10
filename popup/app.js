@@ -28,6 +28,9 @@ async function start () {
 
   const savedData = [];
 
+  const tableElm = document.getElementById("result")
+  tableElm.innerHTML = "Working.."
+
   try {
     for (const { id, url } of urlData) {
       const tab = await browser.tabs.create({ url, active: false });
@@ -51,7 +54,10 @@ async function start () {
 
     await browser.storage.local.set({ savedData });
     console.table(savedData);
+
+    rendertoTable(savedData, tableElm)
   } catch (error) {
+    tableElm.innerHTML = `An error occurred: "${error}". Please try again..`
     console.error("An error occurred:", error);
   }
 }
@@ -61,4 +67,24 @@ function retrieve () {
   browser.storage.local.get("savedData").then((data) => {
     console.table(data.savedData);
   });
+}
+
+function rendertoTable (data, tableElm) {
+  if (!data || !data.length) {
+    tableElm.innerHTML = 'No data found. Please try again..'
+  }
+
+  let tableHead = '<thead><tr>'
+  Object.keys(data[0]).forEach(key => { tableHead += `<td>${key}</td>` })
+  tableHead += '</tr></thead>'
+  
+  let tableBody = '<tbody>'
+  data.forEach(row => {
+    tableBody += '<tr>'
+    Object.values(row).forEach(value => { tableBody += `<td>${value}</td>` })
+    tableBody += '</tr>'
+  })
+  tableBody += '</tbody>'
+
+  return tableElm.innerHTML = tableHead + tableBody
 }

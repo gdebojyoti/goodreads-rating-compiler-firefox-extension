@@ -1,17 +1,11 @@
-html,
-body {
-  width: 100px;
-}
-
 button {
+  margin: 10px auto;
+  padding: 5px 10px;
   border: none;
-  width: 100%;
-  margin: 3% auto;
-  padding: 4px;
-  text-align: center;
-  font-size: 1.5em;
-  cursor: pointer;
+  font-size: 1em;
   background-color: #e5f2f2;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 button:hover {
