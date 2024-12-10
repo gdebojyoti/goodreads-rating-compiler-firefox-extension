@@ -13,15 +13,12 @@ function listenForClicks () {
 }
 
 async function start () {
-  console.log("performing my actual duties..")
-
   const urlData = []
+  const total = 19
 
-  for (let i = 1; i <= 2; i++) {
+  for (let i = 1; i <= total; i++) {
     const minifigId = i < 10 ? `elf00${i}` : `elf0${i}`
-    const baseUrl = `https://www.bricklink.com/v2/catalog/catalogitem.page?M=${minifigId}#T=S&O={%22cond%22:%22N%22,%22iconly%22:0}`
-
-    console.log(minifigId)
+    const baseUrl = `https://www.bricklink.com/v2/catalog/catalogitem.page?M=${minifigId}#T=S&O={"ss":"IN","cond":"N","iconly":0}`
 
     urlData.push({
       id: minifigId,
@@ -41,8 +38,6 @@ async function start () {
         // code: "document.title;" // Fetch the title directly
       });
 
-      console.log("retrived title:", result)
-
       // Save the URL and title
       savedData.push({
         id,
@@ -50,12 +45,14 @@ async function start () {
         ...result
       });
 
+      console.log(`${id} done`)
+
       // Close the tab
       await browser.tabs.remove(tab.id);
     }
 
     await browser.storage.local.set({ savedData });
-    console.log("Saved data:", savedData);
+    console.table(savedData);
   } catch (error) {
     console.error("An error occurred:", error);
   }
@@ -64,6 +61,6 @@ async function start () {
 function retrieve () {
   // Fetch saved data from storage
   browser.storage.local.get("savedData").then((data) => {
-    console.log("Retrieved data:", data.savedData);
+    console.table(data.savedData);
   });
 }
