@@ -24,12 +24,15 @@ button[type="reset"]:hover {
   margin-top: 10px;
   padding: 10px;
   background-color: #f7f7f7;
+  border-left: solid 5px #d7d7d7;
 }
 .msg--alert {
   background-color: #fdd;
+  border-left-color: #fbb;
 }
 .msg--success {
   background-color: #dfd;
+  border-left: #bfb;
 }
 
 .input-field {
@@ -50,4 +53,18 @@ button[type="reset"]:hover {
 
 .result-table {
   margin-top: 20px;
+}
+
+.msg, .result-table {
+  opacity: 0;
+  
+  animation: fadeIn .2s ease-in forwards;
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }

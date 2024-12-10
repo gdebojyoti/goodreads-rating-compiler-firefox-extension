@@ -93,7 +93,12 @@ async function onSubmit (e) {
       })
     })
   } catch (e) {
-    msgContainerElm.innerHTML += `<div class="msg msg--alert">${e}</div>`
+    msgContainerElm.innerHTML += `<div class="msg msg--alert">
+      ${e}
+      <br>
+      Please fix the input data and try again..
+    </div>`
+    return
   }
 
   msgContainerElm.innerHTML += `<div class="msg">Looking up prices..</div>`
@@ -130,8 +135,18 @@ async function onSubmit (e) {
 
     msgContainerElm.innerHTML += `<div class="msg msg--success">Thank you for using ${extensionName} extension! The price details are listed below..</div>`
   } catch (error) {
-    tableElm.innerHTML = `An error occurred: "${error}". Please try again..`
-    console.error("An error occurred:", error);
+    msgContainerElm.innerHTML += `<div class="msg msg--alert">
+      ${error}.
+      <br>
+      This is probably our fault, but there is also a chance that something is not right with the data you entered.
+      <br><br>
+      Here are somethings that you can try -
+      <ul>
+        <li>Check if the generated list of minifigure IDs is correct. If not, please correct the input data.</li>
+        <li>Do all the items in the list exist?</li>
+        <li>Try a smaller list.</li>
+      </ul>
+    </div>`
   }
 }
 
