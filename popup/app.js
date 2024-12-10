@@ -5,11 +5,8 @@ console.log("popup/app.js has loaded..")
 document.addEventListener("DOMContentLoaded", listenForClicks);
 
 function listenForClicks () {
-  const ctaElm = document.getElementById("set-cta")
+  const ctaElm = document.getElementById("cta")
   ctaElm.addEventListener("click", start)
-  
-  const getElm = document.getElementById("get-cta")
-  getElm.addEventListener("click", retrieve)
 }
 
 async function start () {
@@ -29,7 +26,7 @@ async function start () {
   const savedData = [];
 
   const tableElm = document.getElementById("result")
-  tableElm.innerHTML = "Working.."
+  tableElm.innerHTML = "Checking.."
 
   try {
     for (const { id, url } of urlData) {
@@ -60,13 +57,6 @@ async function start () {
     tableElm.innerHTML = `An error occurred: "${error}". Please try again..`
     console.error("An error occurred:", error);
   }
-}
-
-function retrieve () {
-  // Fetch saved data from storage
-  browser.storage.local.get("savedData").then((data) => {
-    console.table(data.savedData);
-  });
 }
 
 function rendertoTable (data, tableElm) {
