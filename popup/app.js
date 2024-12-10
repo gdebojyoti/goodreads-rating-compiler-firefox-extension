@@ -45,7 +45,7 @@ async function start () {
               // check if element has been generated every 
               let interval = setInterval(() => {
                 const elm = document.querySelector(selector)
-                if (selector) {
+                if (elm) {
                   clearInterval(interval)
                   interval = null
 
