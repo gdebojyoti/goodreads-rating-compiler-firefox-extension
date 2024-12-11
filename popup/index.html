@@ -14,13 +14,17 @@
         </div> -->
 
         <div class="input-field">
-          <label for="minifig-ids">Enter list of minifigures *</label>
+          <label for="minifig-ids">
+            Enter list of minifigures *
+            <br>
+            <em>A comma separated list, containing single IDs (eg: col008) as well as range of IDs (eg: elf001...elf020)</em>
+          </label>
           <textarea
             id="minifig-ids"
             name="minifig-ids"
             class="input input--textarea"
-            placeholder="elf001...elf003,elf008,col111...col113"
-          >elf055...elf055</textarea>
+            placeholder="Example: elf001...elf003,elf008,col111...col113"
+          ></textarea>
         </div>
         
         <button type="submit" id="cta">Check prices</button>
