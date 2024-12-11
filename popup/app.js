@@ -8,22 +8,18 @@ function listenForClicks () {
   form.addEventListener("submit", onSubmit)
 }
 
-function onSubmit (e) {
-  e.preventDefault()
-
-  
-}
-
 function parseMinifigIds (data) {
   const ids = []
   
   data.split(',').forEach(item => {
-    if (!item.includes('...')) {
-      ids.push(item)
+    const trimmed = item.trim()
+
+    if (!trimmed.includes('...')) {
+      ids.push(trimmed)
       return
     }
 
-    ids.push(...getIdsInRange(item))
+    ids.push(...getIdsInRange(trimmed))
   })
 
   return ids
@@ -79,9 +75,14 @@ async function onSubmit (e) {
   msgContainerElm.innerHTML += `<div class="msg">Calculating..</div>`
 
   try {
-    const minifigIdsText = e.target.elements['minifig-ids'].value || ''
+    const minifigIdsText = (e.target.elements['minifig-ids'].value || '').trim()
+
+    if (!minifigIdsText) {
+      msgContainerElm.innerHTML += `<div class="msg msg--alert">Input cannot be empty</div>`
+      return
+    }
+    
     const minifigIds = parseMinifigIds(minifigIdsText)
-    console.log(minifigIds)
     msgContainerElm.innerHTML += `<div class="msg msg--warning">Generated list of minifigure IDs: ${minifigIds.join(', ')}</div>`
 
     minifigIds.forEach(minifigId => {
