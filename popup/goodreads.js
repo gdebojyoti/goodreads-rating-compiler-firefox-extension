@@ -7,17 +7,35 @@
 
   await waitForElementToLoad(selector)
 
-  const row = document.querySelector(selector)
-  if (!row) {
+  const rowElm = document.querySelector(selector)
+  if (!rowElm) {
     return 'No tr element found'
   }
 
-  const linkTextElm = row.querySelector('.bookTitle')
-  const ratingElm = row.querySelector('.minirating')
+  return getData(rowElm)
+})()
+
+function getData (row) {
+  const anchorTarget = row.querySelector('.u-anchorTarget')
+  const link = row.querySelector('.bookTitle')
+  const span = link.querySelector('span');
+  const thumbnailUrlElm = row.querySelector('.bookCover');
+  const bookTitle = span.innerText || ''
+  const ratingText = row.querySelector('.minirating').innerText.trim()
+
+  // Regular expression to match the average rating and total ratings
+  const regex = /(\d+\.\d+)\s+avg rating\s+—\s+(\d+)\s+ratings/;
+
+  // Apply the regex to the string
+  const matches = ratingText.match(regex);
 
   return {
-    url: linkTextElm.href,
-    title: linkTextElm?.innerText,
-    rating: ratingElm?.innerText
+    key: anchorTarget.id,
+    url: link.href,
+    title: bookTitle,
+    thumbnailUrl: thumbnailUrlElm.src,
+    rating: matches && matches[1],  // First capturing group: average rating
+    totalRatings: matches && matches[2],  // Second capturing group: total ratings
+    publisher: 'DC'
   }
-})()
+}
