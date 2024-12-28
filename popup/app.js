@@ -1,4 +1,4 @@
-const EXTENSION_NAME = 'BrickLink Price Finder v1'
+const EXTENSION_NAME = 'BrickLink Price Finder'
 const DC_WIKIPEDIA_URL = 'https://en.wikipedia.org/wiki/DC_Omnibus'
 
 // Add event listener on page load
@@ -6,11 +6,12 @@ document.addEventListener("DOMContentLoaded", listenForClicks);
 
 function listenForClicks () {
   console.log(`${EXTENSION_NAME} loaded..`)
-  // const form = document.getElementById("details-form")
-  // form.addEventListener("submit", onSubmit)
-
+  
   const dcWikipediaCta = document.getElementById('dc-wikipedia')
   dcWikipediaCta.addEventListener('click', handleDcWikiClick)
+
+  const formCta = document.getElementById("google-dc-list-cta")
+  formCta.addEventListener("click", handleDcGoogleSearch)
 }
 
 async function handleDcWikiClick () {
@@ -56,89 +57,37 @@ async function handleDcWikiClick () {
   }
 }
 
-async function onSubmit (e) {
-  e.preventDefault()
+async function handleDcGoogleSearch () {
+  const fileInput = document.getElementById("google-dc-list-field")
+  const file = fileInput.files[0] // Get the selected file
 
-  const urlData = []
-
-  const msgContainerElm = document.getElementById("msg-container")
-  msgContainerElm.innerHTML = ""
-  
-  msgContainerElm.innerHTML += `<div class="msg">Calculating..</div>`
-
-  try {
-    const minifigIdsText = (e.target.elements['minifig-ids'].value || '').trim()
-
-    if (!minifigIdsText) {
-      msgContainerElm.innerHTML += `<div class="msg msg--alert">Input cannot be empty</div>`
-      return
-    }
-    
-    const minifigIds = parseMinifigIds(minifigIdsText)
-    msgContainerElm.innerHTML += `<div class="msg msg--warning">Generated list of minifigure IDs: ${minifigIds.join(', ')}</div>`
-
-    minifigIds.forEach(minifigId => {
-      const baseUrl = `https://www.bricklink.com/v2/catalog/catalogitem.page?M=${minifigId}#T=S&O={"ss":"IN","cond":"N","iconly":0}`
-
-      urlData.push({
-        id: minifigId,
-        url: baseUrl
-      })
-    })
-  } catch (e) {
-    msgContainerElm.innerHTML += `<div class="msg msg--alert">
-      ${e}
-      <br>
-      Please fix the input data and try again..
-    </div>`
+  if (!file) {
+    console.log("Please select a file.")
     return
   }
 
-  msgContainerElm.innerHTML += `<div class="msg">Looking up prices..</div>`
-  
-  const savedData = []
+  const result = await readFromJson(file)
+  console.log("resultresult", result)
+}
 
-  const tableElm = document.getElementById("result")
+async function readFromJson (file) {
+  return new Promise ((resolve, reject) => {
+    // Create a FileReader to read the file
+    const reader = new FileReader()
 
-  try {
-    for (const { id, url } of urlData) {
-      const tab = await browser.tabs.create({ url, active: false });
+    reader.onload = function (event) {
+      try {
+        // Parse the JSON content
+        const jsonData = JSON.parse(event.target.result)
 
-      // Wait for the tab to load and execute a script to fetch the title
-      const [result] = await browser.tabs.executeScript(tab.id, {
-        file: './tab.js'
-      });
+        // TODO: Add your logic to work with the data (e.g., send to Google search)
+        resolve(jsonData)
+      } catch (error) {
+        reject("Error parsing JSON:", error.message)
+      }
+    };
 
-      // Save the URL and title
-      savedData.push({
-        id,
-        ...result
-      });
-
-      console.log(`${id} done`)
-
-      // Close the tab
-      await browser.tabs.remove(tab.id);
-    }
-
-    await browser.storage.local.set({ savedData });
-    console.table(savedData);
-
-    rendertoTable(savedData, tableElm)
-
-    msgContainerElm.innerHTML += `<div class="msg msg--success">Thank you for using ${EXTENSION_NAME} extension! The price details are listed below..</div>`
-  } catch (error) {
-    msgContainerElm.innerHTML += `<div class="msg msg--alert">
-      ${error}.
-      <br>
-      This is probably our fault, but there is also a chance that something is not right with the data you entered.
-      <br><br>
-      Here are somethings that you can try -
-      <ul>
-        <li>Check if the generated list of minifigure IDs is correct. If not, please correct the input data.</li>
-        <li>Do all the items in the list exist?</li>
-        <li>Try a smaller list.</li>
-      </ul>
-    </div>`
-  }
+    // Read the file as text
+    reader.readAsText(file)
+  })
 }
