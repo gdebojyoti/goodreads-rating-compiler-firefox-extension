@@ -1,0 +1,42 @@
+(async function () {
+  const selector = 'table tbody tr'
+  // const tables = document.querySelector('#mw-content-text .wikitable')
+
+  await waitForElementToLoad(selector)
+
+  const row = document.querySelector(selector)
+  if (!row) {
+    return 'No tr element found'
+  }
+
+  const linkTextElm = row.querySelector('.bookTitle')
+  const ratingElm = row.querySelector('.minirating')
+
+  return {
+    url: linkTextElm.href,
+    title: linkTextElm?.innerText,
+    rating: ratingElm?.innerText
+  }
+})()
+
+function waitForElementToLoad (selector, { timeout, gap } = { timeout: 10000, gap: 200 }) {
+  return new Promise((resolve, reject) => {
+    let timer = setTimeout(() => {
+      reject('Element failed to load within ' + timeout / 1000 + ' seconds')
+    }, timeout)
+
+    // check if element has been generated every 
+    let interval = setInterval(() => {
+      const elm = document.querySelector(selector)
+      if (elm) {
+        clearInterval(interval)
+        interval = null
+
+        clearTimeout(timer)
+        timer = null
+
+        resolve()
+      }
+    }, gap)
+  })
+}

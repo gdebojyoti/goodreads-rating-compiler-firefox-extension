@@ -10,8 +10,8 @@ function listenForClicks () {
   const dcWikipediaCta = document.getElementById('dc-wikipedia')
   dcWikipediaCta.addEventListener('click', handleDcWikiClick)
 
-  const formCta = document.getElementById("google-dc-list-cta")
-  formCta.addEventListener("click", handleDcGoogleSearch)
+  const formCta = document.getElementById("goodreads-dc-list-cta")
+  formCta.addEventListener("click", handleDcWebSearch)
 }
 
 async function handleDcWikiClick () {
@@ -57,8 +57,8 @@ async function handleDcWikiClick () {
   }
 }
 
-async function handleDcGoogleSearch () {
-  const fileInput = document.getElementById("google-dc-list-field")
+async function handleDcWebSearch () {
+  const fileInput = document.getElementById("goodreads-dc-list-field")
   const file = fileInput.files[0] // Get the selected file
 
   if (!file) {
@@ -68,6 +68,8 @@ async function handleDcGoogleSearch () {
 
   const result = await readFromJson(file)
   console.log("resultresult", result)
+
+  goodreadBooks(result)
 }
 
 async function readFromJson (file) {
@@ -80,7 +82,6 @@ async function readFromJson (file) {
         // Parse the JSON content
         const jsonData = JSON.parse(event.target.result)
 
-        // TODO: Add your logic to work with the data (e.g., send to Google search)
         resolve(jsonData)
       } catch (error) {
         reject("Error parsing JSON:", error.message)
@@ -90,4 +91,24 @@ async function readFromJson (file) {
     // Read the file as text
     reader.readAsText(file)
   })
+}
+
+async function goodreadBooks (books) {
+  // run only on the first 2 books
+  for (let i = 0; i < 2; i++) {
+    const { title } = books[i]
+
+    // open DC wikipedia page in a new tab
+    const tab = await browser.tabs.create({ url: `https://www.goodreads.com/search?q=${title}`, active: false })
+
+    // Wait for the tab to load and execute a script to fetch the title
+    const [result] = await browser.tabs.executeScript(tab.id, {
+      file: './goodreads.js'
+    })
+
+    // Close the tab
+    await browser.tabs.remove(tab.id)
+
+    console.log(result)
+  }
 }
