@@ -4,64 +4,9 @@ const extensionName = 'BrickLink Price Finder'
 document.addEventListener("DOMContentLoaded", listenForClicks);
 
 function listenForClicks () {
-  const form = document.getElementById("details-form")
-  form.addEventListener("submit", onSubmit)
-}
-
-function parseMinifigIds (data) {
-  const ids = []
-  
-  data.split(',').forEach(item => {
-    const trimmed = item.trim()
-
-    if (!trimmed.includes('...')) {
-      ids.push(trimmed)
-      return
-    }
-
-    ids.push(...getIdsInRange(trimmed))
-  })
-
-  return ids
-}
-
-function getIdsInRange (item) {
-  const range = item.split('...')
-  
-  const regex = /^([a-zA-Z]+)(\d+)$/
-  const matchLower = range[0].match(regex)
-
-  const series = matchLower[1] // letters (eg: col, elf)
-  const lowerLimit = parseInt(matchLower[2]) // numbers (eg: 3, 12, 991)
-
-  const matchUpper = range[1].match(regex)
-
-  const upperLimit = parseInt(matchUpper[2]) // numbers (eg: 3, 12, 991)
-
-  if (lowerLimit > upperLimit) {
-    throw new Error("Range seems incorrect. Correct range will look like \"elf001...elf003\"")
-  }
-
-  const arr = []
-  for (let i = lowerLimit; i <= upperLimit; i++) {
-    arr.push(`${series}${getStringWithZeroes(i)}`)
-  }
-
-  return arr
-}
-
-function getStringWithZeroes (number) {
-  // assuming length to be 3
-  
-  if (number < 10) {
-    return `00${number}`
-  }
-  
-  if (number < 100) {
-    return `0${number}`
-  }
-  
-  return number
+  console.log(`${extensionName} loaded..`)
+  // const form = document.getElementById("details-form")
+  // form.addEventListener("submit", onSubmit)
 }
 
 async function onSubmit (e) {
@@ -149,24 +94,4 @@ async function onSubmit (e) {
       </ul>
     </div>`
   }
-}
-
-function rendertoTable (data, tableElm) {
-  if (!data || !data.length) {
-    tableElm.innerHTML = 'No data found. Please try again..'
-  }
-
-  let tableHead = '<thead><tr>'
-  Object.keys(data[0]).forEach(key => { tableHead += `<td>${key}</td>` })
-  tableHead += '</tr></thead>'
-  
-  let tableBody = '<tbody>'
-  data.forEach(row => {
-    tableBody += '<tr>'
-    Object.values(row).forEach(value => { tableBody += `<td>${value}</td>` })
-    tableBody += '</tr>'
-  })
-  tableBody += '</tbody>'
-
-  return tableElm.innerHTML = tableHead + tableBody
 }

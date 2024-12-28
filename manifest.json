@@ -1,12 +1,12 @@
 {
   "manifest_version": 2,
-  "name": "bricklink-price-finder",
+  "name": "GoodReads Rating Compiler",
   "version": "0.1",
 
-  "description": "Look up and store prices across different BrickLink item pages",
+  "description": "Look up data for different books on GoodReads",
 
   "icons": {
-    "48": "icons/bpf-48.jpg"
+    "48": "icons/grc-64.png"
   },
 
   "background": {
@@ -15,13 +15,15 @@
   },
 
   "browser_action": {
-    "default_icon": "icons/bpf-48.jpg"
+    "default_icon": "icons/grc-64.png"
   },
 
   "permissions": [
     "activeTab",
     "tabs",
     "storage",
-    "*://*.bricklink.com/*"
+    "*://*.wikipedia.org/*",
+    "*://*.google.com/*",
+    "*://*.goodreads.com/*"
   ]
 }
