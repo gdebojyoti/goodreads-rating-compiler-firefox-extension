@@ -22,6 +22,7 @@
     "activeTab",
     "tabs",
     "storage",
+    "downloads",
     "*://*.wikipedia.org/*",
     "*://*.google.com/*",
     "*://*.goodreads.com/*"
