@@ -72,7 +72,13 @@ async function handleDcWebSearch () {
 
   const result = await readFromJson(file)
   console.log("Data from JSON", result)
-  console.log("Data from GoodReads", await goodreadBooks(result))
+
+  const finalData = {
+    lastUpdatedOn: Date.now(),
+    list: await goodreadBooks(result)
+  }
+  downloadAsJson(finalData, 'dc-omni.json')
+  console.log("Data from GoodReads", finalData)
 }
 
 async function readFromJson (file) {

@@ -34,8 +34,8 @@ function getData (row) {
     url: link.href,
     title: bookTitle,
     thumbnailUrl: thumbnailUrlElm.src,
-    rating: matches && matches[1],  // First capturing group: average rating
-    totalRatings: matches && matches[2],  // Second capturing group: total ratings
+    rating: matches && parseFloat(matches[1]),  // First capturing group: average rating
+    totalRatings: matches && parseInt(matches[2]),  // Second capturing group: total ratings
     publisher: 'DC'
   }
 }
