@@ -1,4 +1,4 @@
-const EXTENSION_NAME = 'BrickLink Price Finder'
+const EXTENSION_NAME = 'GoodReads Rating Compiler'
 const DC_WIKIPEDIA_URL = 'https://en.wikipedia.org/wiki/DC_Omnibus'
 
 // Add event listener on page load
@@ -107,10 +107,22 @@ async function goodreadBooks (books) {
   
   // run only on the first 2 books
   for (let i = 0; i < 2; i++) {
-    const { title } = books[i]
+    const { title, volume } = books[i]
+
+    let searchString = title
+
+    // add "omnibus" to the search string if the book title doesn't have it already
+    if (title.toLowerCase().indexOf('omnibus') === -1) {
+      searchString += ' omnibus'
+    }
+
+    // add volume number if exists
+    if (volume) {
+      searchString += ` vol ${volume}`
+    }
 
     // open DC wikipedia page in a new tab
-    const tab = await browser.tabs.create({ url: `https://www.goodreads.com/search?q=${title}`, active: false })
+    const tab = await browser.tabs.create({ url: `https://www.goodreads.com/search?q=${searchString}`, active: false })
 
     // Wait for the tab to load and execute a script to fetch the title
     const [result] = await browser.tabs.executeScript(tab.id, {
