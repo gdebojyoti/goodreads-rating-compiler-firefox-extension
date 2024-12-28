@@ -42,7 +42,7 @@ async function handleDcWikiClick () {
     // Trigger download as a JSON file
     chrome.downloads.download({
       url: url,
-      filename: "bookData.json",
+      filename: "dc-omnibus-wikipedia-list.json",
       // saveAs: true
     }, function(downloadId) {
       if (chrome.runtime.lastError) {
