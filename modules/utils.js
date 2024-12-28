@@ -19,3 +19,7 @@ export function waitForElementToLoad (selector, { timeout, gap } = { timeout: 10
     }, gap)
   })
 }
+
+export function isDate (date) {
+  return (new Date(date) !== "Invalid Date") && !isNaN(new Date(date));
+}

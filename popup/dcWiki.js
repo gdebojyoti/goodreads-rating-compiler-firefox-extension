@@ -1,6 +1,6 @@
 (async function () {
   const commonModuleUrl = chrome.runtime.getURL('../modules/utils.js')
-  const { waitForElementToLoad } = await import(commonModuleUrl)
+  const { waitForElementToLoad, isDate } = await import(commonModuleUrl)
 
   const selector = '#mw-content-text table.wikitable'
   // const tables = document.querySelector('#mw-content-text .wikitable')
@@ -79,7 +79,3 @@
   //   amount: parseInt(splittedAndTrimmedText[1].match(/[\d,\.]+/)[0].trim())
   // }
 })()
-
-function isDate (date) {
-  return (new Date(date) !== "Invalid Date") && !isNaN(new Date(date));
-}

@@ -67,9 +67,8 @@ async function handleDcWebSearch () {
   }
 
   const result = await readFromJson(file)
-  console.log("resultresult", result)
-
-  goodreadBooks(result)
+  console.log("Data from JSON", result)
+  console.log("Data from GoodReads", await goodreadBooks(result))
 }
 
 async function readFromJson (file) {
@@ -94,6 +93,8 @@ async function readFromJson (file) {
 }
 
 async function goodreadBooks (books) {
+  const allData = []
+  
   // run only on the first 2 books
   for (let i = 0; i < 2; i++) {
     const { title } = books[i]
@@ -110,5 +111,25 @@ async function goodreadBooks (books) {
     await browser.tabs.remove(tab.id)
 
     console.log(result)
+    allData.push(result)
   }
+
+  return allData
 }
+
+// async function googleBooks (books) {
+//   // run only on the first book
+//   for (let i = 0; i < 1; i++) {
+//     const { title } = books[i]
+
+//     // open DC wikipedia page in a new tab
+//     const tab = await browser.tabs.create({ url: `https://www.google.com/search?q=${title} site:goodreads.com`, active: false })
+
+//     // Wait for the tab to load and execute a script to fetch the title
+//     const [result] = await browser.tabs.executeScript(tab.id, {
+//       file: './google.js'
+//     })
+
+//     console.log(result)
+//   }
+// }
