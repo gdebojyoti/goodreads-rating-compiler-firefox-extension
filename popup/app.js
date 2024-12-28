@@ -31,30 +31,34 @@ async function handleDcWikiClick () {
 
     console.log('result', result)
 
-    // Convert the book data to a JSON string
-    const jsonString = JSON.stringify(result, null, 2)
-
-    // Create a Blob from the JSON string
-    const blob = new Blob([jsonString], { type: "application/json" })
-
-    // Generate an object URL for the Blob
-    const url = URL.createObjectURL(blob)
-
-    // Trigger download as a JSON file
-    chrome.downloads.download({
-      url: url,
-      filename: "dc-omnibus-wikipedia-list.json",
-      // saveAs: true
-    }, function(downloadId) {
-      if (chrome.runtime.lastError) {
-        console.error("Error downloading file:", chrome.runtime.lastError.message)
-      } else {
-        console.log("Download started with ID:", downloadId)
-      }
-    })
+    downloadAsJson(result, 'dc-omnibus-wikipedia-list.json')
   } catch (e) {
     console.log(e)
   }
+}
+
+function downloadAsJson (data, filename) {
+  // Convert the book data to a JSON string
+  const jsonString = JSON.stringify(data, null, 2)
+
+  // Create a Blob from the JSON string
+  const blob = new Blob([jsonString], { type: "application/json" })
+
+  // Generate an object URL for the Blob
+  const url = URL.createObjectURL(blob)
+
+  // Trigger download as a JSON file
+  chrome.downloads.download({
+    url: url,
+    // saveAs: true,
+    filename
+  }, function(downloadId) {
+    if (chrome.runtime.lastError) {
+      console.error("Error downloading file:", chrome.runtime.lastError.message)
+    } else {
+      console.log("Download started with ID:", downloadId)
+    }
+  })
 }
 
 async function handleDcWebSearch () {
