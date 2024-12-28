@@ -106,7 +106,7 @@ async function goodreadBooks (books) {
   const allData = []
   
   // run only on the first 2 books
-  for (let i = 0; i < 2; i++) {
+  for (let i = 0; i < books.length; i++) {
     const { title, volume } = books[i]
 
     let searchString = title
@@ -124,16 +124,20 @@ async function goodreadBooks (books) {
     // open DC wikipedia page in a new tab
     const tab = await browser.tabs.create({ url: `https://www.goodreads.com/search?q=${searchString}`, active: false })
 
-    // Wait for the tab to load and execute a script to fetch the title
-    const [result] = await browser.tabs.executeScript(tab.id, {
-      file: './goodreads.js'
-    })
+    try {
+      // Wait for the tab to load and execute a script to fetch the title
+      const [result] = await browser.tabs.executeScript(tab.id, {
+        file: './goodreads.js'
+      })
 
-    // Close the tab
-    await browser.tabs.remove(tab.id)
+      // Close the tab | NOTE: this will keep the tab open for all failure cases
+      await browser.tabs.remove(tab.id)
 
-    console.log(result)
-    allData.push(result)
+      console.log(`${i} done..`)
+      allData.push(result)
+    } catch (e) {
+      console.log(`Error occurred with ${searchString}`, e)
+    }
   }
 
   return allData
