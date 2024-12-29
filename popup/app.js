@@ -107,18 +107,23 @@ async function goodreadBooks (books) {
   
   // run only on the first 2 books
   for (let i = 0; i < books.length; i++) {
-    const { title, volume } = books[i]
+    const { title, volume, isKeywordInvalid, isNotPublished, shouldSkipKeywordVolume, shouldSkipKeywordOmnibus } = books[i]
+
+    // exit iteration for certain flags
+    if (isKeywordInvalid || isNotPublished) {
+      continue
+    }
 
     let searchString = title
 
     // add "omnibus" to the search string if the book title doesn't have it already
-    if (title.toLowerCase().indexOf('omnibus') === -1) {
+    if (!shouldSkipKeywordOmnibus && title.toLowerCase().indexOf('omnibus') === -1) {
       searchString += ' omnibus'
     }
 
     // add volume number if exists
     if (volume) {
-      searchString += ` vol ${volume}`
+      searchString += shouldSkipKeywordVolume ? ` ${volume}` : ` vol ${volume}`
     }
 
     // open DC wikipedia page in a new tab
