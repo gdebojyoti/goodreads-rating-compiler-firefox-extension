@@ -107,7 +107,7 @@ async function goodreadBooks (books) {
   
   // run only on the first 2 books
   for (let i = 0; i < books.length; i++) {
-    const { title, volume, isKeywordInvalid, isNotPublished, shouldSkipKeywordVolume, shouldSkipKeywordOmnibus } = books[i]
+    const { title, volume, isKeywordInvalid, isNotPublished, shouldSkipVolume, shouldSkipKeywordVolume, shouldSkipKeywordOmnibus } = books[i]
 
     // exit iteration for certain flags
     if (isKeywordInvalid || isNotPublished) {
@@ -122,7 +122,7 @@ async function goodreadBooks (books) {
     }
 
     // add volume number if exists
-    if (volume) {
+    if (!shouldSkipVolume && volume) {
       searchString += shouldSkipKeywordVolume ? ` ${volume}` : ` vol ${volume}`
     }
 
