@@ -21,7 +21,7 @@ function getData (row) {
   const span = link.querySelector('span');
   const thumbnailUrlElm = row.querySelector('.bookCover');
   const bookTitle = span.innerText || ''
-  const ratingText = row.querySelector('.minirating').innerText.trim()
+  const ratingText = row.querySelector('.minirating').innerText.trim().replace(',', '')
 
   // Regular expression to match the average rating and total ratings
   const regex = /(\d+\.\d+)\s+avg rating\s+—\s+(\d+)\s+ratings/;
