@@ -1,5 +1,6 @@
 const EXTENSION_NAME = 'GoodReads Rating Compiler'
 const DC_WIKIPEDIA_URL = 'https://en.wikipedia.org/wiki/DC_Omnibus'
+const MARVEL_WIKIPEDIA_URL = 'https://en.wikipedia.org/wiki/Marvel_Omnibus'
 
 // wait for DELAY_TIME_SECONDS time after every DELAY_AFTER_ITERATION hits
 const DELAY_AFTER_ITERATION = 15
@@ -12,22 +13,41 @@ function listenForClicks () {
   console.log(`${EXTENSION_NAME} loaded..`)
   
   const dcWikipediaCta = document.getElementById('dc-wikipedia')
-  dcWikipediaCta.addEventListener('click', handleDcWikiClick)
+  dcWikipediaCta.addEventListener('click', () => handleWikipediaParsing('dc'))
+  
+  const marvelWikipediaCta = document.getElementById('marvel-wikipedia')
+  marvelWikipediaCta.addEventListener('click', () => handleWikipediaParsing('marvel'))
 
   const formCta = document.getElementById("goodreads-dc-list-cta")
   formCta.addEventListener("click", handleDcWebSearch)
 }
 
-async function handleDcWikiClick () {
+async function handleWikipediaParsing (key) {
   try {
-    // const savedData = []
+    let url = '', file = '', downloadFileName = ''
+
+    switch (key) {
+      case 'dc': {
+        url = DC_WIKIPEDIA_URL
+        file = './dcWiki.js'
+        downloadFileName = 'dc-omnibus-wikipedia-list.json'
+        break
+      }
+      case 'marvel': {
+        url = MARVEL_WIKIPEDIA_URL
+        file = './marvelWiki.js'
+        downloadFileName = 'marvel-omnibus-wikipedia-list.json'
+        break
+      }
+      default: return
+    }
 
     // open DC wikipedia page in a new tab
-    const tab = await browser.tabs.create({ url: DC_WIKIPEDIA_URL, active: false })
+    const tab = await browser.tabs.create({ url, active: false })
 
     // Wait for the tab to load and execute a script to fetch the title
     const [result] = await browser.tabs.executeScript(tab.id, {
-      file: './dcWiki.js'
+      file
     })
 
     // Close the tab
@@ -35,7 +55,7 @@ async function handleDcWikiClick () {
 
     console.log('result', result)
 
-    downloadAsJson(result, 'dc-omnibus-wikipedia-list.json')
+    downloadAsJson(result, downloadFileName)
   } catch (e) {
     console.log(e)
   }
