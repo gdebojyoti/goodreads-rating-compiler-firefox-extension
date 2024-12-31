@@ -164,20 +164,3 @@ function delayBy (timeInSeconds) {
     }, timeInSeconds * 1000)
   })
 }
-
-// async function googleBooks (books) {
-//   // run only on the first book
-//   for (let i = 0; i < 1; i++) {
-//     const { title } = books[i]
-
-//     // open DC wikipedia page in a new tab
-//     const tab = await browser.tabs.create({ url: `https://www.google.com/search?q=${title} site:goodreads.com`, active: false })
-
-//     // Wait for the tab to load and execute a script to fetch the title
-//     const [result] = await browser.tabs.executeScript(tab.id, {
-//       file: './google.js'
-//     })
-
-//     console.log(result)
-//   }
-// }
