@@ -22,21 +22,20 @@
 
     const rows = tableElm.querySelectorAll('tr')
     rows.forEach(elm => {
-      console.log(elm.children.length)
-      // // check if elm is valid - i.e., if children is more than 3
-      // if (elm.children.length < 4) {
-      //   return
-      // }
+      // check if elm is valid - i.e., if children is exactly 7
+      if (elm.children.length !== 7) {
+        return
+      }
   
-      const titleElm = elm.querySelector('td')
-      console.log(titleElm)
+      const titleElm = elm.querySelector('td:nth-child(2)')
   
       // ignore if no element is found
       if (!titleElm) {
         return
       }
 
-      const text = titleElm.innerText.replace(' ‡', '')
+      const text = titleElm.innerText.replace(/[\t\r\n]/g, '');
+      console.log(text)
 
       // check for volumes
       if (text.length <= 2) {
