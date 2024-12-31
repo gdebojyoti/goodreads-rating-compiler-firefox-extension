@@ -1,6 +1,10 @@
 const EXTENSION_NAME = 'GoodReads Rating Compiler'
 const DC_WIKIPEDIA_URL = 'https://en.wikipedia.org/wiki/DC_Omnibus'
 
+// wait for DELAY_TIME_SECONDS time after every DELAY_AFTER_ITERATION hits
+const DELAY_AFTER_ITERATION = 15
+const DELAY_TIME_SECONDS = 20
+
 // Add event listener on page load
 document.addEventListener("DOMContentLoaded", listenForClicks);
 
@@ -109,6 +113,11 @@ async function goodreadBooks (books) {
   for (let i = 0; i < books.length; i++) {
     const { title, volume, isKeywordInvalid, isNotPublished, shouldSkipVolume, shouldSkipKeywordVolume, shouldSkipKeywordOmnibus } = books[i]
 
+    // wait for DELAY_TIME_SECONDS seconds after every DELAY_AFTER_ITERATION hits
+    if (i % DELAY_AFTER_ITERATION === 0) {
+      await delayBy(DELAY_TIME_SECONDS)
+    }
+
     // exit iteration for certain flags
     if (isKeywordInvalid || isNotPublished) {
       continue
@@ -138,7 +147,7 @@ async function goodreadBooks (books) {
       // Close the tab | NOTE: this will keep the tab open for all failure cases
       await browser.tabs.remove(tab.id)
 
-      console.log(`${i} done..`)
+      console.log(`${i + 1} done..`)
       allData.push(result)
     } catch (e) {
       console.log(`Error occurred with ${searchString}`, e)
@@ -146,6 +155,14 @@ async function goodreadBooks (books) {
   }
 
   return allData
+}
+
+function delayBy (timeInSeconds) {
+  return new Promise ((res) => {
+    setTimeout(() => {
+      res()
+    }, timeInSeconds * 1000)
+  })
 }
 
 // async function googleBooks (books) {
